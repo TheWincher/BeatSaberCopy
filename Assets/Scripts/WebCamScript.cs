@@ -50,6 +50,7 @@ public class WebCamScript : MonoBehaviour
 
             GetContourBlue();
             GetContourRed();
+            GetCentroid();
 
             CvInvoke.Imshow("Cam", imgWebCam);
         }
@@ -129,6 +130,19 @@ public class WebCamScript : MonoBehaviour
 
     void GetCentroid()
     {
+        Moments blueMoment = CvInvoke.Moments(biggestContourBlue);
+        Moments redMoment = CvInvoke.Moments(biggestContourRed);
+
+        centroidBlue = new Point((int)(blueMoment.M10 / blueMoment.M00), (int)(blueMoment.M01 / blueMoment.M00));
+        centroidRed = new Point((int)(redMoment.M10 / redMoment.M00), (int)(redMoment.M01 / redMoment.M00));
+
+        CvInvoke.Circle(imgWebCam, centroidBlue, 2, new MCvScalar(0, 0, 0));
+        CvInvoke.Circle(imgWebCam, centroidRed, 2, new MCvScalar(0, 0, 0));
+
+        float x = ((float)centroidRed.X / (float)webCam.Width)  - 1f;
+        float y = ((float)centroidRed.Y / (float)webCam.Height) - 1f;
+
+        GameObject.Find("Sphere").transform.position = new Vector3(x * Screen.width, y * Screen.height, 0);
     }
 
     // Update is called once per frame
