@@ -81,8 +81,10 @@ public class TP1 : MonoBehaviour
         CvInvoke.Erode(imgGray, resMat, structElement, new Point(-1, -1), 3, BorderType.Constant, new MCvScalar(0));
         CvInvoke.Dilate(resMat, resMat, structElement, new Point(-1, -1), 3, BorderType.Constant, new MCvScalar(0));
 
+        //Trouve les contours dans l'image
         CvInvoke.FindContours(imgGray, contours, null, RetrType.List, ChainApproxMethod.ChainApproxNone);
 
+        //On récupère le plus grand contour
         if(contours.Size > 0)
         {
             biggestContour = contours[0];
