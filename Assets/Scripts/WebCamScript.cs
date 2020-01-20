@@ -39,6 +39,8 @@ public class WebCamScript : MonoBehaviour
 
         webCam = new VideoCapture(0);
         webCam.ImageGrabbed += new EventHandler(handleWebcamGrab);
+
+        Debug.Log(Screen.width);
     }
 
     void handleWebcamGrab(object sender, EventArgs e)
@@ -130,8 +132,14 @@ public class WebCamScript : MonoBehaviour
 
     void GetCentroid()
     {
-        Moments blueMoment = CvInvoke.Moments(biggestContourBlue);
-        Moments redMoment = CvInvoke.Moments(biggestContourRed);
+        Moments blueMoment = new Moments();
+        Moments redMoment = new Moments();
+
+        if (biggestContourBlue != null)
+            blueMoment = CvInvoke.Moments(biggestContourBlue);
+
+        if (biggestContourRed != null)
+            redMoment = CvInvoke.Moments(biggestContourRed);
 
         centroidBlue = new Point((int)(blueMoment.M10 / blueMoment.M00), (int)(blueMoment.M01 / blueMoment.M00));
         centroidRed = new Point((int)(redMoment.M10 / redMoment.M00), (int)(redMoment.M01 / redMoment.M00));
@@ -139,10 +147,10 @@ public class WebCamScript : MonoBehaviour
         CvInvoke.Circle(imgWebCam, centroidBlue, 2, new MCvScalar(0, 0, 0));
         CvInvoke.Circle(imgWebCam, centroidRed, 2, new MCvScalar(0, 0, 0));
 
-        float x = ((float)centroidRed.X / (float)webCam.Width)  - 1f;
-        float y = ((float)centroidRed.Y / (float)webCam.Height) - 1f;
+        float x = ((float)centroidRed.X / (float)webCam.Width);
+        float y = ((float)centroidRed.Y / (float)webCam.Height);
 
-        GameObject.Find("Sphere").transform.position = new Vector3(x * Screen.width, y * Screen.height, 0);
+        GameObject.Find("Sphere").transform.position = new Vector3(x, y, 0);
     }
 
     // Update is called once per frame
