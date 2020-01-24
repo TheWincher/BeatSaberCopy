@@ -50,8 +50,6 @@ public class WebCamScript : MonoBehaviour
         webCam.ImageGrabbed += new EventHandler(handleWebcamGrab);
 
         tex = new Texture2D(webCam.Width, webCam.Height, TextureFormat.BGRA32, false);
-
-        Debug.Log(Screen.width);
     }
 
     void handleWebcamGrab(object sender, EventArgs e)
