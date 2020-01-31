@@ -13,14 +13,14 @@ public class TargetBehaviour : MonoBehaviour
     public float activationImageMinScale;
     Material imageMaterial;
     Material objectMaterial;
+    public float comboTimer;
+    public float playerOnTargetTimer;
 
 
     // Start is called before the first frame update
     void Start()
     {
         objectMaterial = GetComponent<Renderer>().material;
-
-
         float activationImageScale = activationImageMinScale + (activationTimer / maxActivationTimer);
         activationImage.transform.localScale = new Vector3(activationImageScale, activationImageScale, activationImageScale);
         imageMaterial = activationImage.GetComponent<Renderer>().material;
@@ -45,12 +45,18 @@ public class TargetBehaviour : MonoBehaviour
             objectMaterial.SetColor("_EmissionColor",new Color(activeTimer/maxActiveTimer, 0, 0));
         }
     }
-
-    public void OnTriggerEnter(Collider collision)
+    
+    public void OnTriggerStay(Collider collision)
     {
         if (collision.tag == "Player")
         {
-            Destroy(gameObject);
+            LevelManager.IncreaseScore();
+            playerOnTargetTimer += Time.deltaTime;
+            if(playerOnTargetTimer >= comboTimer)
+            {
+                playerOnTargetTimer = 0;
+                LevelManager.IncreaseComboMultiplier();
+            }
         }
     }
 
@@ -61,7 +67,7 @@ public class TargetBehaviour : MonoBehaviour
         objectMaterial.color = (Color.red);
         objectMaterial.EnableKeyword("_EMISSION");
         objectMaterial.SetColor("_EmissionColor", Color.red);
-
+        GetComponent<Collider>().enabled = true;
         yield return new WaitForSeconds(maxActiveTimer);
         Destroy(gameObject);
     }

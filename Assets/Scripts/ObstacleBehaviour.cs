@@ -16,11 +16,12 @@ public class ObstacleBehaviour : MonoBehaviour
         
     }
 
-    private void OnTriggerEnter(Collider collision)
+    private void OnTriggerStay(Collider collision)
     {
         if (collision.tag == "Player")
         {
-            Destroy(gameObject);
+            LevelManager.DecreaseScore();
+            LevelManager.ResetComboMultiplier();
         }
     }
 }
