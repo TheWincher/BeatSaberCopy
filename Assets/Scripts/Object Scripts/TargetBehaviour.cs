@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TargetBehaviour : MonoBehaviour
 {
+    public Color color;
     public Collider trigger;
     public float activationTimer;
     public float maxActivationTimer;
@@ -21,10 +22,18 @@ public class TargetBehaviour : MonoBehaviour
     void Start()
     {
         objectMaterial = GetComponent<Renderer>().material;
+        Debug.Log(GetComponentsInChildren<Renderer>().Length); // TODO : faire en sorte que la couleur change bien sur tous les renderers
+        foreach(Renderer r in GetComponentsInChildren<Renderer>())
+        {
+            Debug.Log(r.name);
+            r.material.color = color;
+        }
+
+        GetComponent<LineRenderer>().material.color = color;
         float activationImageScale = activationImageMinScale + (activationTimer / maxActivationTimer);
         activationImage.transform.localScale = new Vector3(activationImageScale, activationImageScale, activationImageScale);
         imageMaterial = activationImage.GetComponent<Renderer>().material;
-        imageMaterial.color = new Color(1.0f/activationImageScale, 0, 0, 1.0f/activationImageScale);
+        imageMaterial.color = color/activationImageScale;
         StartCoroutine("DestroyAfterTime");
     }
 
@@ -36,13 +45,13 @@ public class TargetBehaviour : MonoBehaviour
         {
             float activationImageScale = activationImageMinScale + (activationTimer / maxActivationTimer);
             activationImage.transform.localScale = new Vector3(activationImageScale, activationImageScale, activationImageScale);
-            imageMaterial.color = new Color(1.0f / activationImageScale, 0, 0, 1.0f / activationImageScale);
+            imageMaterial.color = color / activationImageScale;
         }
         else
         {
             activeTimer -= Time.deltaTime;
-            objectMaterial.color = new Color(activeTimer / maxActiveTimer, 0, 0, activeTimer / maxActiveTimer);
-            objectMaterial.SetColor("_EmissionColor",new Color(activeTimer/maxActiveTimer, 0, 0));
+            objectMaterial.color = new Color(color.r / maxActiveTimer, color.g, color.b, activeTimer / maxActiveTimer);
+            objectMaterial.SetColor("_EmissionColor", new Color(color.r / maxActiveTimer, color.g, color.b, activeTimer / maxActiveTimer));
         }
     }
     
@@ -64,9 +73,9 @@ public class TargetBehaviour : MonoBehaviour
     {
         yield return new WaitForSeconds(maxActivationTimer);
         Destroy(activationImage);
-        objectMaterial.color = (Color.red);
+        objectMaterial.color = (color);
         objectMaterial.EnableKeyword("_EMISSION");
-        objectMaterial.SetColor("_EmissionColor", Color.red);
+        objectMaterial.SetColor("_EmissionColor", color);
         GetComponent<Collider>().enabled = true;
         yield return new WaitForSeconds(maxActiveTimer);
         Destroy(gameObject);
