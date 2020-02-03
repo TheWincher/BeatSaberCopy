@@ -30,10 +30,11 @@ public class WebCamScript : MonoBehaviour
 
     GameObject sphereRed, sphereBlue;
 
+
     //public Vector3 hautRed, basRed, hautBlue, basBlue;
     //Red (20,100,100)min et (40,255,255) max
     //Blue (120,100,100)min et (130,255,255) max
-    public UnityEngine.Color hautCouleur1,basCouleur1, hautCouleur2, basCouleur2;
+    public Hsv hautCouleur1,basCouleur1, hautCouleur2, basCouleur2;
     // Start is called before the first frame update
     void Start()
     {
@@ -54,6 +55,24 @@ public class WebCamScript : MonoBehaviour
         tex = new Texture2D(webCam.Width, webCam.Height, TextureFormat.BGRA32, false);
         sphereRed = GameObject.Find("SphereRed");
         sphereBlue = GameObject.Find("SphereBlue");
+
+
+        Hsv HSVR = new Hsv(PlayerPrefs.GetFloat("ColorRed"), PlayerPrefs.GetFloat("SatRed"), PlayerPrefs.GetFloat("ValRed"));
+        Hsv HSVB = new Hsv(PlayerPrefs.GetFloat("ColorBlue"), PlayerPrefs.GetFloat("SatBlue"), PlayerPrefs.GetFloat("ValBlue"));
+
+        //UnityEngine.Color sphereColorR = UnityEngine.Color.HSVToRGB(PlayerPrefs.GetFloat("ColorRed"), PlayerPrefs.GetFloat("SatRed"), PlayerPrefs.GetFloat("ValRed"));
+        //UnityEngine.Color sphereColorB = UnityEngine.Color.HSVToRGB(PlayerPrefs.GetFloat("ColorBlue"), PlayerPrefs.GetFloat("SatBlue"), PlayerPrefs.GetFloat("ValBlue"));
+
+
+        Hsv seuil = new Hsv(10f, 10f, 0);
+
+        hautCouleur1 = new Hsv(HSVR.Hue + seuil.Hue, HSVR.Satuation + seuil.Satuation, HSVR.Value/* + seuil.Value*/);
+        basCouleur1 = new Hsv(HSVR.Hue - seuil.Hue, HSVR.Satuation - seuil.Satuation, HSVR.Value /*- seuil.Value*/);
+        hautCouleur2 = new Hsv(HSVB.Hue + seuil.Hue, HSVB.Satuation + seuil.Satuation, HSVB.Value /*+ seuil.Value*/);
+        basCouleur2 = new Hsv(HSVB.Hue - seuil.Hue, HSVB.Satuation - seuil.Satuation, HSVB.Value /*- seuil.Value*/);
+
+        Debug.Log(hautCouleur2);
+        Debug.Log(basCouleur2);
     }
 
     void handleWebcamGrab(object sender, EventArgs e)
@@ -86,15 +105,9 @@ public class WebCamScript : MonoBehaviour
     {
 
         //Seuillage
-        Vector3 colorhaut2HSV = new Vector3();
-        UnityEngine.Color.RGBToHSV(hautCouleur2, out colorhaut2HSV.x, out colorhaut2HSV.y, out colorhaut2HSV.z);
-        colorhaut2HSV *= 255f;
 
-        Vector3 colorBas2HSV = new Vector3();
-        UnityEngine.Color.RGBToHSV(basCouleur2, out colorBas2HSV.x, out colorBas2HSV.y, out colorBas2HSV.z);
-        colorBas2HSV *= 255f;
 
-        imgGray = imgWebCamHSV.ToImage<Hsv, Byte>().InRange(new Hsv(colorBas2HSV.x/2f, colorBas2HSV.y, colorBas2HSV.z), new Hsv(colorhaut2HSV.x/2f, colorhaut2HSV.y, colorhaut2HSV.z));
+        imgGray = imgWebCamHSV.ToImage<Hsv, Byte>().InRange(basCouleur2, hautCouleur2);
         imgWebCamGray = imgGray.Mat;
 
         //Ouverture 
@@ -122,21 +135,15 @@ public class WebCamScript : MonoBehaviour
         }
 
         CvInvoke.DrawContours(imgWebCam, contoursBlue, biggestContourBlueIndex, new MCvScalar(255, 0, 0),3);
-        //CvInvoke.Imshow("Cam Blue", imgGray);
+        CvInvoke.Imshow("Cam Blue", imgGray);
     }
 
     void GetContourRed()
     {
         //Seuillage
-        Vector3 colorhaut1HSV = new Vector3();
-        UnityEngine.Color.RGBToHSV(hautCouleur1, out colorhaut1HSV.x, out colorhaut1HSV.y, out colorhaut1HSV.z);
-        colorhaut1HSV *= 255f;
-        
-        Vector3 colorBas1HSV = new Vector3();
-        UnityEngine.Color.RGBToHSV(basCouleur1, out colorBas1HSV.x, out colorBas1HSV.y, out colorBas1HSV.z);
-        colorBas1HSV *= 255f;
 
-        imgGray = imgWebCamHSV.ToImage<Hsv, Byte>().InRange(new Hsv(colorBas1HSV.x, colorBas1HSV.y, colorBas1HSV.z), new Hsv(colorhaut1HSV.x, colorhaut1HSV.y, colorhaut1HSV.z));
+
+        imgGray = imgWebCamHSV.ToImage<Hsv, Byte>().InRange(basCouleur1, hautCouleur1);
         imgWebCamGray = imgGray.Mat;
 
         //Ouverture 
@@ -219,11 +226,9 @@ public class WebCamScript : MonoBehaviour
         //pour du 16/9
         float posXR = centroidR.x * 20f - 10f;
         float posYR = centroidR.y * 14f - 7f;
-        if (biggestContourRed !=null && CvInvoke.ContourArea(biggestContourRed) > thresholdArea)
-        {
-            sphereRed.transform.position = new Vector3(posXR, posYR, 0);
-        }
-        
+
+        sphereRed.transform.position = new Vector3(posXR, posYR, 10);
+            
 
         //BLUE
         float xB = ((float)centroidBlue.X / (float)webCam.Width);
@@ -262,7 +267,10 @@ public class WebCamScript : MonoBehaviour
         float posXB = centroidB.x * 20f - 10f;
         float posYB = centroidB.y * 14f - 7f;
         
-        sphereBlue.transform.position = new Vector3(posXB, posYB, 0);
+        sphereBlue.transform.position = new Vector3(posXB, posYB, 10);
+
+        //Debug.Log(centroidB);
+        //Debug.Log(centroidR);
     }
 
     // Update is called once per frame
@@ -276,6 +284,8 @@ public class WebCamScript : MonoBehaviour
         {
             return;
         }
+
+        GetCentroid();
     }
 
     void OnDestroy()

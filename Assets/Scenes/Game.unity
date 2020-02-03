@@ -797,10 +797,10 @@ MonoBehaviour:
   image: {fileID: 856503376}
   deadZone: 0
   thresholdArea: 0
-  hautCouleur1: {r: 0, g: 0, b: 0, a: 0}
-  basCouleur1: {r: 0, g: 0, b: 0, a: 0}
-  hautCouleur2: {r: 0, g: 0, b: 0, a: 0}
-  basCouleur2: {r: 0, g: 0, b: 0, a: 0}
+  hautCouleur1: {r: 0, g: 0, b: 0, a: 1}
+  basCouleur1: {r: 0, g: 0, b: 0, a: 1}
+  hautCouleur2: {r: 0, g: 0, b: 0, a: 1}
+  basCouleur2: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &1103290004
 GameObject:
   m_ObjectHideFlags: 0
