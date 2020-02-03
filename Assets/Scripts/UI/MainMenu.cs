@@ -15,6 +15,7 @@ public class MainMenu : MonoBehaviour
         SettingMenu.SetActive(false);
         settingButton.onClick.AddListener(ActiveSettingMenu);
         playButton.onClick.AddListener(Play);
+        quitButton.onClick.AddListener(Quit);
     }
 
     void ActiveSettingMenu()
@@ -26,5 +27,11 @@ public class MainMenu : MonoBehaviour
     void Play()
     {
         SceneManager.LoadScene("Game");
+    }
+
+    void Quit()
+    {
+        Debug.Log("rip");
+        Application.Quit();
     }
 }
