@@ -28,6 +28,8 @@ public class WebCamScript : MonoBehaviour
     public float deadZone;
     public float thresholdArea;
 
+    GameObject sphereRed, sphereBlue;
+
     //public Vector3 hautRed, basRed, hautBlue, basBlue;
     //Red (20,100,100)min et (40,255,255) max
     //Blue (120,100,100)min et (130,255,255) max
@@ -50,6 +52,8 @@ public class WebCamScript : MonoBehaviour
         webCam.ImageGrabbed += new EventHandler(handleWebcamGrab);
 
         tex = new Texture2D(webCam.Width, webCam.Height, TextureFormat.BGRA32, false);
+        sphereRed = GameObject.Find("SphereRed");
+        sphereBlue = GameObject.Find("SphereBlue");
     }
 
     void handleWebcamGrab(object sender, EventArgs e)
@@ -217,7 +221,7 @@ public class WebCamScript : MonoBehaviour
         float posYR = centroidR.y * 14f - 7f;
         if (biggestContourRed !=null && CvInvoke.ContourArea(biggestContourRed) > thresholdArea)
         {
-            GameObject.Find("CapsuleRed").transform.position = new Vector3(posXR, posYR, 0);
+            sphereRed.transform.position = new Vector3(posXR, posYR, 0);
         }
         
 
@@ -258,7 +262,7 @@ public class WebCamScript : MonoBehaviour
         float posXB = centroidB.x * 20f - 10f;
         float posYB = centroidB.y * 14f - 7f;
         
-        GameObject.Find("CapsuleBlue").transform.position = new Vector3(posXB, posYB, 0);
+        sphereBlue.transform.position = new Vector3(posXB, posYB, 0);
     }
 
     // Update is called once per frame

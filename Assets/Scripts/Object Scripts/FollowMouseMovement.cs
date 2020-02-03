@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FollowMouseMovement : MonoBehaviour
 {
-
+    public bool isRed;
     public float depth;
     // Start is called before the first frame update
     void Start()
