@@ -56,20 +56,28 @@ public class WebCamScript : MonoBehaviour
         sphereRed = GameObject.Find("SphereRed");
         sphereBlue = GameObject.Find("SphereBlue");
 
+        
+
 
         Hsv HSVR = new Hsv(PlayerPrefs.GetFloat("ColorRed"), PlayerPrefs.GetFloat("SatRed"), PlayerPrefs.GetFloat("ValRed"));
         Hsv HSVB = new Hsv(PlayerPrefs.GetFloat("ColorBlue"), PlayerPrefs.GetFloat("SatBlue"), PlayerPrefs.GetFloat("ValBlue"));
-
+        //Confirmation des couleurs
+        Material matRed = sphereRed.GetComponent<MeshRenderer>().material;
+        matRed.color = UnityEngine.Color.HSVToRGB((float)HSVR.Hue/180f,1,1,true);
+        Debug.Log(matRed.color);
+        Material matBlue = sphereBlue.GetComponent<MeshRenderer>().material;
+        matBlue.color = UnityEngine.Color.HSVToRGB((float)HSVB.Hue / 180f, 1,1, true);
+        Debug.Log(matBlue.color);
         //UnityEngine.Color sphereColorR = UnityEngine.Color.HSVToRGB(PlayerPrefs.GetFloat("ColorRed"), PlayerPrefs.GetFloat("SatRed"), PlayerPrefs.GetFloat("ValRed"));
         //UnityEngine.Color sphereColorB = UnityEngine.Color.HSVToRGB(PlayerPrefs.GetFloat("ColorBlue"), PlayerPrefs.GetFloat("SatBlue"), PlayerPrefs.GetFloat("ValBlue"));
 
 
         Hsv seuil = new Hsv(10f, 10f, 0);
 
-        hautCouleur1 = new Hsv(HSVR.Hue + seuil.Hue, HSVR.Satuation + seuil.Satuation, HSVR.Value/* + seuil.Value*/);
-        basCouleur1 = new Hsv(HSVR.Hue - seuil.Hue, HSVR.Satuation - seuil.Satuation, HSVR.Value /*- seuil.Value*/);
-        hautCouleur2 = new Hsv(HSVB.Hue + seuil.Hue, HSVB.Satuation + seuil.Satuation, HSVB.Value /*+ seuil.Value*/);
-        basCouleur2 = new Hsv(HSVB.Hue - seuil.Hue, HSVB.Satuation - seuil.Satuation, HSVB.Value /*- seuil.Value*/);
+        hautCouleur1 = new Hsv(HSVR.Hue + seuil.Hue, 255, 255);
+        basCouleur1 = new Hsv(HSVR.Hue - seuil.Hue, HSVR.Satuation, HSVR.Value /*- seuil.Value*/);
+        hautCouleur2 = new Hsv(HSVB.Hue + seuil.Hue, 255, 255);
+        basCouleur2 = new Hsv(HSVB.Hue - seuil.Hue, HSVB.Satuation, HSVB.Value /*- seuil.Value*/);
 
         Debug.Log(hautCouleur2);
         Debug.Log(basCouleur2);
@@ -108,14 +116,15 @@ public class WebCamScript : MonoBehaviour
 
 
         imgGray = imgWebCamHSV.ToImage<Hsv, Byte>().InRange(basCouleur2, hautCouleur2);
+        CvInvoke.Imshow("Cam Blue", imgGray);
         imgWebCamGray = imgGray.Mat;
 
         //Ouverture 
-        CvInvoke.Erode(imgWebCamGray, resMat, structElement, new Point(-1, -1), 7, BorderType.Constant, new MCvScalar(0));
-        CvInvoke.Dilate(resMat, resMat, structElement, new Point(-1, -1), 7, BorderType.Constant, new MCvScalar(0));
+        CvInvoke.Erode(imgWebCamGray, imgWebCamGray, structElement, new Point(-1, -1), 7, BorderType.Constant, new MCvScalar(0));
+        CvInvoke.Dilate(imgWebCamGray, imgWebCamGray, structElement, new Point(-1, -1), 7, BorderType.Constant, new MCvScalar(0));
 
         //Trouve les contours dans l'image
-        CvInvoke.FindContours(imgGray, contoursBlue, null, RetrType.List, ChainApproxMethod.ChainApproxNone);
+        CvInvoke.FindContours(imgWebCamGray, contoursBlue, null, RetrType.List, ChainApproxMethod.ChainApproxNone);
 
         //On récupère le plus grand contour
         if(contoursBlue.Size > 0)
@@ -135,7 +144,6 @@ public class WebCamScript : MonoBehaviour
         }
 
         CvInvoke.DrawContours(imgWebCam, contoursBlue, biggestContourBlueIndex, new MCvScalar(255, 0, 0),3);
-        CvInvoke.Imshow("Cam Blue", imgGray);
     }
 
     void GetContourRed()
@@ -171,7 +179,7 @@ public class WebCamScript : MonoBehaviour
         }
 
         CvInvoke.DrawContours(imgWebCam, contoursRed, biggestContourRedIndex, new MCvScalar(0, 0, 255),3);
-        //CvInvoke.Imshow("Cam Red", imgGray);
+        CvInvoke.Imshow("Cam Red", imgGray);
     }
 
     void GetCentroid()
