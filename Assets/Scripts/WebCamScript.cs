@@ -74,10 +74,10 @@ public class WebCamScript : MonoBehaviour
 
         Hsv seuil = new Hsv(10f, 10f, 0);
 
-        hautCouleur1 = new Hsv(HSVR.Hue + seuil.Hue, 255, 255);
-        basCouleur1 = new Hsv(HSVR.Hue - seuil.Hue, HSVR.Satuation, HSVR.Value /*- seuil.Value*/);
-        hautCouleur2 = new Hsv(HSVB.Hue + seuil.Hue, 255, 255);
-        basCouleur2 = new Hsv(HSVB.Hue - seuil.Hue, HSVB.Satuation, HSVB.Value /*- seuil.Value*/);
+        hautCouleur1 = new Hsv(nfmod(HSVR.Hue + seuil.Hue, 180d), 255f, 255f);
+        basCouleur1 = new Hsv(nfmod(HSVR.Hue - seuil.Hue, 180d), HSVR.Satuation, HSVR.Value);
+        hautCouleur2 = new Hsv(nfmod(HSVB.Hue - seuil.Hue, 180d), 255, 255);
+        basCouleur2 = new Hsv(HSVB.Hue - seuil.Hue, HSVB.Satuation - seuil.Satuation, HSVB.Value);
 
         Debug.Log(hautCouleur2);
         Debug.Log(basCouleur2);
@@ -300,6 +300,16 @@ public class WebCamScript : MonoBehaviour
     {
         webCam.Dispose();
         CvInvoke.DestroyAllWindows();
+    }
+
+    double nfmod(double a, double b)
+    {
+        return a - b * Mathf.Floor(a / b);
+    }
+
+    float nfmod(float a, float b)
+    {
+        return a - b * Mathf.Floor(a / b);
     }
 }
 
