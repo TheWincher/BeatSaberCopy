@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Untagged")
+        if (other.tag == "Obstacle")
         {
             Time.timeScale = 0;
             Debug.Log("U died");
