@@ -81,15 +81,17 @@ public class WebCamScript : MonoBehaviour
     {
         if(webCam.IsOpened)
         {
+            //On récupère l image de la webcam
             webCam.Retrieve(imgWebCam);
+            //Conversion en hsv
             CvInvoke.CvtColor(imgWebCam, imgWebCamHSV, ColorConversion.Bgr2Hsv);
 
+            //Récupération des contours
             GetContourBlue();
             GetContourRed();
             GetCentroid();
 
-
-            //CvInvoke.Imshow("Cam", imgWebCam);
+            //Flip et affichage de la webcam dans une image2D
             CvInvoke.Flip(imgWebCam, imgWebCam, FlipType.Vertical);
             CvInvoke.Flip(imgWebCam, imgWebCam, FlipType.Horizontal);
             
@@ -105,14 +107,11 @@ public class WebCamScript : MonoBehaviour
 
     void GetContourBlue()
     {
-
-        //Seuillage
-
-
+        //On converti notre image en nuance de gris en seuillant selon notre couleur
         imgGray = imgWebCamHSV.ToImage<Hsv, Byte>().InRange(basCouleur2, hautCouleur2);
         imgWebCamGray = imgGray.Mat;
 
-        //Ouverture 
+        //Erosion et dilatation de l image pour enlever des pixel isolé
         CvInvoke.Erode(imgWebCamGray, imgWebCamGray, structElement, new Point(-1, -1), 7, BorderType.Constant, new MCvScalar(0));
         CvInvoke.Dilate(imgWebCamGray, imgWebCamGray, structElement, new Point(-1, -1), 7, BorderType.Constant, new MCvScalar(0));
 
@@ -136,14 +135,13 @@ public class WebCamScript : MonoBehaviour
             }
         }
 
+        //On dessine les contours
         CvInvoke.DrawContours(imgWebCam, contoursBlue, biggestContourBlueIndex, new MCvScalar(255, 0, 0),3);
     }
 
     void GetContourRed()
     {
-        //Seuillage
-
-
+        //Meme chose que GetContourBlue mais avec un seuillage différent
         imgGray = imgWebCamHSV.ToImage<Hsv, Byte>().InRange(basCouleur1, hautCouleur1);
         imgWebCamGray = imgGray.Mat;
 
@@ -176,6 +174,7 @@ public class WebCamScript : MonoBehaviour
 
     void GetCentroid()
     {
+        //On récupère le plus grand contours de chaque couleurs
         Moments blueMoment = new Moments();
         Moments redMoment = new Moments();
 
@@ -185,19 +184,24 @@ public class WebCamScript : MonoBehaviour
         if (biggestContourRed != null)
             redMoment = CvInvoke.Moments(biggestContourRed);
 
+        //On calcule le centroid de chacun de nos contours
         centroidBlue = new Point((int)(blueMoment.M10 / blueMoment.M00), (int)(blueMoment.M01 / blueMoment.M00));
         centroidRed = new Point((int)(redMoment.M10 / redMoment.M00), (int)(redMoment.M01 / redMoment.M00));
 
+        //On dessine un cercle sur le centroid (dans l'image)
         CvInvoke.Circle(imgWebCam, centroidBlue, 2, new MCvScalar(0, 0, 0));
         CvInvoke.Circle(imgWebCam, centroidRed, 2, new MCvScalar(0, 0, 0));
 
         //RED
+        //On normalise le centroid en [0...1]
         float xR = ((float)centroidRed.X / (float)webCam.Width);
         float yR = ((float)centroidRed.Y / (float)webCam.Height);
-        xR = 1f - xR;
-        yR = 1f - yR;
+        xR = 1f - xR;//Inversion de l'axe X de la caméra
+        //yR = 1f - yR;
         Vector2 centroidR = new Vector2(xR, yR);
         
+        //Vérification de la distance des points pour éviter le tremblotement lorsque l on tient un objet
+        //On joue maintenant sur la table, donc le code est moins utile
         if (lastsPointsR.Count > 1)
         {
             Vector2 lastCentroid = lastsPointsR[lastsPointsR.Count - 1];
@@ -222,18 +226,23 @@ public class WebCamScript : MonoBehaviour
             lastsPointsR.RemoveAt(0);
         }        
 
+        //LastPointsR et B contienne les 40 dernieres position de notre centroid (C'était une question que vous avez posé en cours)
+
         //pour du 16/9
+        //On ramene la position de 0..1 en coordonnés pour le jeux compris entre -10 et 10 en X et -7 et 7 en Y
         float posXR = centroidR.x * 20f - 10f;
         float posYR = centroidR.y * 14f - 7f;
 
+        //on change la position de la sphère en jeu selon la position référence de notre objet sur la caméra
         sphereRed.transform.position = new Vector3(posXR, posYR, 10);
             
 
         //BLUE
+        //Même chose pour le bleu
         float xB = ((float)centroidBlue.X / (float)webCam.Width);
         float yB = ((float)centroidBlue.Y / (float)webCam.Height);
         xB = 1f - xB;
-        yB = 1f - yB;
+        //yB = 1f - yB;
         Vector2 centroidB = new Vector2(xB, yB);
 
         if (lastsPointsB.Count > 1)

@@ -10,11 +10,15 @@ public class MoveTo : MonoBehaviour
     public GameObject target;
     private Vector3 direction;
     private float speed;
+    public bool isRing;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        if(isRing)
+        {
+            destination = gameObject.transform.position;
+        }
         target.transform.position = destination;
         direction = destination - transform.position;
         speed = direction.magnitude / timeToMove;

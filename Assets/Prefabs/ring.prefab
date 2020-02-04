@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 214442933ba9e374f9804d9e28d94e73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeUntilDestroy: 3
+  timeUntilDestroy: 5
 --- !u!114 &8158144141471687118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,6 +126,7 @@ MonoBehaviour:
   destination: {x: 0, y: 0, z: 10}
   timeToMove: 3
   target: {fileID: 184117484577037238}
+  isRing: 1
 --- !u!114 &8158144141471687105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,8 +139,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86d0532bc3ad6294b931f0f98e263b4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  desiredScale: 0.05
-  timeToScale: 3
+  desiredScale: 0.1
+  timeToScale: 5
   isRescaling: 0
 --- !u!120 &603137250870777505
 LineRenderer:

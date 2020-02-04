@@ -43,6 +43,7 @@ public class LevelManager : MonoBehaviour
     {
         score = 0;
         highScore = PlayerPrefs.GetFloat("highScore");
+        txtHighScore.text = "Highscore : " + highScore.ToString();
 
         scoreIncrement = 1;
         scoreDecrement = 1;
@@ -60,12 +61,13 @@ public class LevelManager : MonoBehaviour
         }
 
         gameLength -= Time.deltaTime;
-        txtTimer.text = ((int)gameLength/60).ToString() + ":" + ((int)gameLength%60).ToString();
+        txtTimer.text = ((int)gameLength/60).ToString() + ":" + ((int)gameLength%60).ToString("00");
         if(gameLength<=0)
         {
             if(score>PlayerPrefs.GetFloat("highScore"))
             {
                 PlayerPrefs.SetFloat("highScore", score);
+                PlayerPrefs.Save();
             } 
             SceneManager.LoadScene("Menu");
         }
