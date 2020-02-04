@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1172384692487868916}
   m_Layer: 0
   m_Name: Cylinder
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -107,6 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 214442933ba9e374f9804d9e28d94e73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeUntilDestroy: 3
 --- !u!114 &1172384692487868916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,7 +115,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1172384692487868910}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9d61d54dc86ebc441a6aecff8b28d67b, type: 3}
   m_Name: 

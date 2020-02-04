@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: -135907289555437024}
   m_Layer: 0
   m_Name: MovingTarget
-  m_TagString: Untagged
+  m_TagString: Target
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -187,6 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1924e99b08e29d14fa6180bfd27cdfaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  color: {r: 0, g: 0, b: 0, a: 0}
   trigger: {fileID: 3160226373515298392}
   activationTimer: 1.5
   maxActivationTimer: 1.5
@@ -196,6 +197,7 @@ MonoBehaviour:
   activationImageMinScale: 1
   comboTimer: 0.5
   playerOnTargetTimer: 0
+  isTargetR: 0
 --- !u!114 &5798690188302564799
 MonoBehaviour:
   m_ObjectHideFlags: 0

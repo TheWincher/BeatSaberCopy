@@ -51,7 +51,6 @@ public class TargetBehaviour : MonoBehaviour
             r.material.color = color;
         }
 
-        GetComponent<LineRenderer>().material.color = color;
         float activationImageScale = activationImageMinScale + (activationTimer / maxActivationTimer);
         activationImage.transform.localScale = new Vector3(activationImageScale, activationImageScale, activationImageScale);
         imageMaterial = activationImage.GetComponent<Renderer>().material;
