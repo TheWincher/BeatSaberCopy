@@ -16,9 +16,9 @@ public class ObstacleBehaviour : MonoBehaviour
         
     }
 
-    private void OnTriggerStay(Collider collision)
+    private void OnCollisionStay(Collision collision)
     {
-        if (collision.tag == "Player")
+        if (collision.gameObject.tag == "Player")
         {
             LevelManager.DecreaseScore();
             LevelManager.ResetComboMultiplier();

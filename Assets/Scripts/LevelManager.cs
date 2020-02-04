@@ -15,6 +15,8 @@ public class LevelManager : MonoBehaviour
     public Text txtScore;
     public Text txtScoreMult;
 
+    public float timeBeforeInstantiation;
+
 
     void Awake()
     {

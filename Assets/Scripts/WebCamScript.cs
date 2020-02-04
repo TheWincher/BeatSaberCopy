@@ -57,30 +57,24 @@ public class WebCamScript : MonoBehaviour
         sphereBlue = GameObject.Find("SphereBlue");
 
         
-
-
         Hsv HSVR = new Hsv(PlayerPrefs.GetFloat("ColorRed"), PlayerPrefs.GetFloat("SatRed"), PlayerPrefs.GetFloat("ValRed"));
         Hsv HSVB = new Hsv(PlayerPrefs.GetFloat("ColorBlue"), PlayerPrefs.GetFloat("SatBlue"), PlayerPrefs.GetFloat("ValBlue"));
+        
+        
         //Confirmation des couleurs
         Material matRed = sphereRed.GetComponent<MeshRenderer>().material;
         matRed.color = UnityEngine.Color.HSVToRGB((float)HSVR.Hue/180f,1,1,true);
-        Debug.Log(matRed.color);
         Material matBlue = sphereBlue.GetComponent<MeshRenderer>().material;
         matBlue.color = UnityEngine.Color.HSVToRGB((float)HSVB.Hue / 180f, 1,1, true);
-        Debug.Log(matBlue.color);
-        //UnityEngine.Color sphereColorR = UnityEngine.Color.HSVToRGB(PlayerPrefs.GetFloat("ColorRed"), PlayerPrefs.GetFloat("SatRed"), PlayerPrefs.GetFloat("ValRed"));
-        //UnityEngine.Color sphereColorB = UnityEngine.Color.HSVToRGB(PlayerPrefs.GetFloat("ColorBlue"), PlayerPrefs.GetFloat("SatBlue"), PlayerPrefs.GetFloat("ValBlue"));
+
 
 
         Hsv seuil = new Hsv(10f, 10f, 0);
 
         hautCouleur1 = new Hsv(nfmod(HSVR.Hue + seuil.Hue, 180d), 255f, 255f);
         basCouleur1 = new Hsv(nfmod(HSVR.Hue - seuil.Hue, 180d), HSVR.Satuation, HSVR.Value);
-        hautCouleur2 = new Hsv(nfmod(HSVB.Hue - seuil.Hue, 180d), 255, 255);
-        basCouleur2 = new Hsv(HSVB.Hue - seuil.Hue, HSVB.Satuation - seuil.Satuation, HSVB.Value);
-
-        Debug.Log(hautCouleur2);
-        Debug.Log(basCouleur2);
+        hautCouleur2 = new Hsv(nfmod(HSVB.Hue + seuil.Hue, 180d), 255, 255);
+        basCouleur2 = new Hsv(nfmod(HSVB.Hue - seuil.Hue, 180d), HSVB.Satuation, HSVB.Value);
     }
 
     void handleWebcamGrab(object sender, EventArgs e)
@@ -116,7 +110,6 @@ public class WebCamScript : MonoBehaviour
 
 
         imgGray = imgWebCamHSV.ToImage<Hsv, Byte>().InRange(basCouleur2, hautCouleur2);
-        CvInvoke.Imshow("Cam Blue", imgGray);
         imgWebCamGray = imgGray.Mat;
 
         //Ouverture 
@@ -179,7 +172,6 @@ public class WebCamScript : MonoBehaviour
         }
 
         CvInvoke.DrawContours(imgWebCam, contoursRed, biggestContourRedIndex, new MCvScalar(0, 0, 255),3);
-        CvInvoke.Imshow("Cam Red", imgGray);
     }
 
     void GetCentroid()
@@ -229,8 +221,7 @@ public class WebCamScript : MonoBehaviour
         {
             lastsPointsR.RemoveAt(0);
         }        
-        //x 10 -10
-        //y 7 -7
+
         //pour du 16/9
         float posXR = centroidR.x * 20f - 10f;
         float posYR = centroidR.y * 14f - 7f;
@@ -276,9 +267,6 @@ public class WebCamScript : MonoBehaviour
         float posYB = centroidB.y * 14f - 7f;
         
         sphereBlue.transform.position = new Vector3(posXB, posYB, 10);
-
-        //Debug.Log(centroidB);
-        //Debug.Log(centroidR);
     }
 
     // Update is called once per frame
@@ -304,7 +292,7 @@ public class WebCamScript : MonoBehaviour
 
     double nfmod(double a, double b)
     {
-        return a - b * Mathf.Floor(a / b);
+        return a - b * Mathf.Floor((float)(a / b));
     }
 
     float nfmod(float a, float b)
